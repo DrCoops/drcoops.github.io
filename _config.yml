@@ -57,7 +57,7 @@ yandex_site_verification :
 
 # Social Sharing
 twitter:
-  username               : @draccoops
+  username               :
 facebook:
   username               :
   app_id                 :
@@ -82,12 +82,12 @@ analytics:
 author:
   name             : "Dr Adam C. G. Cooper"
   avatar           : "profile.png"
-  bio              : "Transdisciplinary engineering policy researcher "
+  bio              : "Transdisciplinary engineering policy researcher"
   location         : "London/Hove/UK"
   employer         :
   pubmed           : "https://www.ncbi.nlm.nih.gov/pubmed/?term=john+snow"
   googlescholar    : "http://yourfullgooglescholarurl.com"
-  email            : adam.cooper@ucl.ac.uk
+  email            : "adam.cooper@ucl.ac.uk"
   researchgate     :  # example: "https://www.researchgate.net/profile/yourprofile"
   uri              :
   bitbucket        :
