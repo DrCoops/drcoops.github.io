@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Settings — A-PE Navigator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e; --ink-soft: #4a4a6a; --ink-faint: #8888aa;
+    --bg: #f8f7f4; --bg-card: #ffffff; --accent: #2d5be3;
+    --accent-light: #e8eeff; --green: #1a8a5a; --green-bg: #e8f7f0;
+    --amber: #c97000; --amber-bg: #fff8e8; --red: #c0392b; --red-bg: #fdf0ee;
+    --border: #e2e0db; --radius: 12px; --shadow: 0 2px 12px rgba(26,26,46,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Sora', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; }
+
+  .site-header {
+    background: var(--ink); color: white; padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 56px; position: sticky; top: 0; z-index: 100;
+  }
+  .site-header .logo { font-size: 0.85rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: white; text-decoration: none; opacity: 0.9; }
+  .header-nav a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.8rem; margin-left: 1.5rem; }
+  .header-nav a:hover { color: white; }
+
+  .page-hero {
+    background: linear-gradient(135deg, #2d1a4e 0%, #3d2a6e 50%, #2d1a4e 100%);
+    color: white; padding: 3rem 2rem 2.5rem; text-align: center;
+  }
+  .page-hero .eyebrow { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.5; margin-bottom: 0.75rem; }
+  .page-hero h1 { font-family: 'Source Serif 4', serif; font-size: 2rem; font-weight: 300; margin-bottom: 0.5rem; }
+  .page-hero p { font-size: 0.9rem; opacity: 0.65; max-width: 540px; margin: 0 auto; font-weight: 300; }
+
+  .main-container { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+
+  .info-box {
+    background: var(--accent-light); border: 1.5px solid rgba(45,91,227,0.2);
+    border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 2.5rem;
+    font-size: 0.85rem; color: var(--ink-soft); line-height: 1.7;
+  }
+  .info-box strong { color: var(--accent); }
+
+  .admin-section { margin-bottom: 2.5rem; }
+  .admin-section-header {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 1rem; padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem; box-shadow: var(--shadow); margin-bottom: 1rem; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
+  .form-field { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-field label { font-size: 0.75rem; font-weight: 600; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.07em; }
+  .form-field input, .form-field select {
+    padding: 0.65rem 0.9rem; border: 1.5px solid var(--border); border-radius: 8px;
+    font-family: 'Sora', sans-serif; font-size: 0.88rem; color: var(--ink);
+    background: var(--bg); transition: border-color 0.2s;
+  }
+  .form-field input:focus, .form-field select:focus {
+    outline: none; border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(45,91,227,0.1);
+  }
+  .form-field input::placeholder { color: var(--ink-faint); }
+
+  /* RAG override table */
+  .rag-table { width: 100%; border-collapse: collapse; }
+  .rag-table th {
+    text-align: left; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-faint); padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border);
+  }
+  .rag-table td { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--bg); vertical-align: middle; }
+  .rag-table tr:last-child td { border-bottom: none; }
+  .rag-table .option-name { font-size: 0.88rem; color: var(--ink); font-weight: 500; }
+  .rag-table .option-sub { font-size: 0.75rem; color: var(--ink-faint); }
+
+  .rag-select {
+    padding: 0.4rem 0.6rem; border: 1.5px solid var(--border); border-radius: 6px;
+    font-family: 'Sora', sans-serif; font-size: 0.82rem; color: var(--ink);
+    background: var(--bg); cursor: pointer; min-width: 160px;
+  }
+  .rag-select:focus { outline: none; border-color: var(--accent); }
+  .rag-select.green { border-color: #8fd4b5; background: var(--green-bg); color: var(--green); }
+  .rag-select.amber { border-color: #f5c96a; background: var(--amber-bg); color: var(--amber); }
+  .rag-select.red   { border-color: #f0a899; background: var(--red-bg); color: var(--red); }
+
+  .section-tag {
+    display: inline-block; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; padding: 0.15rem 0.5rem; border-radius: 10px;
+    background: var(--accent-light); color: var(--accent); margin-bottom: 0.2rem;
+  }
+
+  .btn-row { display: flex; gap: 1rem; align-items: center; margin-top: 2rem; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--accent); color: white; border: none; padding: 0.85rem 2rem;
+    border-radius: 8px; font-family: 'Sora', sans-serif; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: background 0.2s; box-shadow: 0 2px 8px rgba(45,91,227,0.3);
+  }
+  .btn-primary:hover { background: #1e44c8; }
+  .btn-secondary {
+    background: transparent; color: var(--ink-soft); border: 1.5px solid var(--border);
+    padding: 0.85rem 1.5rem; border-radius: 8px; font-family: 'Sora', sans-serif;
+    font-size: 0.88rem; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--ink-soft); }
+
+  .save-status {
+    padding: 0.75rem 1.25rem; border-radius: 8px; font-size: 0.85rem;
+    display: none; align-items: center; gap: 0.5rem;
+  }
+  .save-status.success { background: var(--green-bg); color: var(--green); border: 1px solid #8fd4b5; display: flex; }
+  .save-status.info { background: var(--accent-light); color: var(--accent); border: 1px solid rgba(45,91,227,0.3); display: flex; }
+
+  .export-block {
+    background: #1a1a2e; border-radius: var(--radius); padding: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .export-block h3 { color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem; }
+  .export-block textarea {
+    width: 100%; height: 200px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px; color: #a8d8a8; font-family: 'Courier New', monospace; font-size: 0.78rem;
+    padding: 1rem; resize: vertical;
+  }
+  .export-block p { color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 0.75rem; line-height: 1.6; }
+  .export-block a { color: rgba(255,255,255,0.7); }
+
+  .site-footer { background: var(--ink); color: rgba(255,255,255,0.4); text-align: center; padding: 2rem; font-size: 0.78rem; margin-top: 4rem; }
+  .site-footer a { color: rgba(255,255,255,0.55); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="../index.html" class="logo">A-PE Navigator</a>
+  <nav class="header-nav">
+    <a href="../index.html">← Back to Navigator</a>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <p class="eyebrow">Configuration</p>
+  <h1>Admin Settings</h1>
+  <p>Customise the Navigator for your organisation — add contacts, links, and adjust RAG priorities</p>
+</div>
+
+<main class="main-container">
+
+  <div class="info-box">
+    <strong>How this works:</strong> Fill in the fields below to customise the Navigator for your organisation. When you click <strong>Save & Export</strong>, the settings are saved to your browser and a new <code>config.js</code> file is generated for you to download. Replace the existing <code>assets/config.js</code> file in your GitHub repository with the downloaded version to publish your changes. No coding required!
+  </div>
+
+  <!-- ORG SETTINGS -->
+  <div class="admin-section">
+    <div class="admin-section-header">Organisation details</div>
+    <div class="card">
+      <div class="form-row">
+        <div class="form-field">
+          <label>Organisation name</label>
+          <input type="text" id="org_name" placeholder="e.g. Department for Science, Innovation and Technology">
+        </div>
+        <div class="form-field">
+          <label>Abbreviation</label>
+          <input type="text" id="org_abbr" placeholder="e.g. DSIT">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACTS -->
+  <div class="admin-section">
+    <div class="admin-section-header">Key contacts</div>
+    <div class="card">
+      <div class="form-row">
+        <div class="form-field">
+          <label>Chief Scientific Adviser name</label>
+          <input type="text" id="csa_name" placeholder="Name">
+        </div>
+        <div class="form-field">
+          <label>CSA email / contact route</label>
+          <input type="text" id="csa_email" placeholder="email or link to contact page">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>SAC / Expert Group name</label>
+          <input type="text" id="sac_name" placeholder="Name of SAC or Expert Group">
+        </div>
+        <div class="form-field">
+          <label>SAC / Expert Group contact</label>
+          <input type="text" id="sac_email" placeholder="email or link">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Director of Analysis / Head of Analysis</label>
+          <input type="text" id="director_analysis" placeholder="Name">
+        </div>
+        <div class="form-field">
+          <label>Head of Profession (Social Research / GSR)</label>
+          <input type="text" id="gsr_hop" placeholder="Name">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>ARI lead</label>
+          <input type="text" id="ari_lead" placeholder="Name or team">
+        </div>
+        <div class="form-field">
+          <label>College of Experts contact</label>
+          <input type="text" id="college_contact" placeholder="Name or team">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>ALB relationship lead</label>
+          <input type="text" id="alb_lead" placeholder="Name or team">
+        </div>
+        <div class="form-field">
+          <label>HR / Secondments contact</label>
+          <input type="text" id="hr_secondments" placeholder="Name or team">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LINKS -->
+  <div class="admin-section">
+    <div class="admin-section-header">Local guidance links</div>
+    <div class="card">
+      <p style="font-size:0.83rem;color:var(--ink-faint);margin-bottom:1.25rem;">Paste the URL for each piece of local guidance. These will appear as clickable links on the relevant option pages. Leave blank if no local guidance exists yet.</p>
+      <div class="form-row">
+        <div class="form-field"><label>CSA guidance</label><input type="url" id="link_csa_guidance" placeholder="https://..."></div>
+        <div class="form-field"><label>SAC guidance</label><input type="url" id="link_sac_guidance" placeholder="https://..."></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>Analyst community</label><input type="url" id="link_analyst_community" placeholder="https://..."></div>
+        <div class="form-field"><label>ALBs guidance</label><input type="url" id="link_albs_guidance" placeholder="https://..."></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>ARI guidance</label><input type="url" id="link_ari_guidance" placeholder="https://..."></div>
+        <div class="form-field"><label>College of experts guidance</label><input type="url" id="link_college_guidance" placeholder="https://..."></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>Research commissioning guidance</label><input type="url" id="link_research_commissioning" placeholder="https://..."></div>
+        <div class="form-field"><label>Secondments guidance</label><input type="url" id="link_secondments" placeholder="https://..."></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>Advisory groups guidance</label><input type="url" id="link_advisory_groups" placeholder="https://..."></div>
+        <div class="form-field"><label>Direct advice guidance</label><input type="url" id="link_direct_advice" placeholder="https://..."></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>Internships guidance</label><input type="url" id="link_internships" placeholder="https://..."></div>
+        <div class="form-field"><label>Student projects guidance</label><input type="url" id="link_student_projects" placeholder="https://..."></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>Policy fellowships guidance</label><input type="url" id="link_policy_fellowships" placeholder="https://..."></div>
+        <div class="form-field"><label>Finding academics (local guide)</label><input type="url" id="link_finding_academics" placeholder="https://..."></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RAG OVERRIDES -->
+  <div class="admin-section">
+    <div class="admin-section-header">Priority overrides (RAG)</div>
+    <div class="card">
+      <p style="font-size:0.83rem;color:var(--ink-soft);line-height:1.7;margin-bottom:1.5rem;">
+        Use these to adjust how the Navigator rates each option for your local context — regardless of what the scoring logic would normally produce. <strong>"Default"</strong> means the standard scoring applies. Setting an option to <strong>Green</strong>, <strong>Amber</strong> or <strong>Red</strong> will override the score for all users.
+        <br><br>For example: if your organisation has no SAC, you might set SAC/Expert Group to Red. Or if your organisation has a particularly active College of Experts, you might promote it to Green.
+      </p>
+      <table class="rag-table">
+        <thead>
+          <tr>
+            <th style="width:50%">Option</th>
+            <th>Local priority override</th>
+          </tr>
+        </thead>
+        <tbody id="rag-override-body">
+          <!-- injected by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SAVE -->
+  <div class="btn-row">
+    <button class="btn-primary" onclick="saveAndExport()">💾 Save &amp; Export config.js</button>
+    <button class="btn-secondary" onclick="loadFromStorage()">↩ Reload saved settings</button>
+    <div class="save-status" id="save-status"></div>
+  </div>
+
+  <!-- EXPORT -->
+  <div class="export-block" id="export-block" style="display:none">
+    <h3>📋 Your new config.js — copy this or use the download button</h3>
+    <textarea id="export-output" readonly></textarea>
+    <div style="margin-top:1rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
+      <button class="btn-primary" onclick="downloadConfig()" style="font-size:0.85rem;padding:0.65rem 1.25rem;">⬇ Download config.js</button>
+      <button class="btn-secondary" onclick="copyConfig()" style="font-size:0.85rem;padding:0.65rem 1.25rem;">📋 Copy to clipboard</button>
+    </div>
+    <p style="margin-top:1rem;">
+      <strong>Next step:</strong> Download <code>config.js</code>, then go to your GitHub repository at
+      <a href="https://github.com/DrCoops/drcoops.github.io" target="_blank">github.com/DrCoops/drcoops.github.io</a>,
+      navigate to <code>navigator/assets/</code>, click on <code>config.js</code>, then click the pencil ✏️ icon to edit,
+      paste in the new content, and click <strong>Commit changes</strong>. Your updates will be live within a minute.
+    </p>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  A-PE Navigator Admin · <a href="../index.html">Back to Navigator</a>
+</footer>
+
+<script src="../assets/data.js"></script>
+<script src="../assets/config.js"></script>
+<script>
+  const OPTIONS = [
+    { id: 'csa',            label: 'Chief Scientific Adviser (CSA)',      section: 'Internal' },
+    { id: 'sac',            label: 'SAC / Expert Group',                   section: 'Internal' },
+    { id: 'gse',            label: 'Government Scientist / Analyst',       section: 'Internal' },
+    { id: 'albs',           label: 'Arms Length Bodies (ALBs)',            section: 'Internal' },
+    { id: 'ari',            label: 'Areas of Research Interest (ARIs)',    section: 'Internal' },
+    { id: 'college',        label: 'College of Experts',                   section: 'Internal' },
+    { id: 'callsforevidence', label: 'Calls for Evidence',                 section: 'External' },
+    { id: 'researchcomm',   label: 'Research Commissioning',               section: 'External' },
+    { id: 'secondment',     label: 'Inward Secondment',                    section: 'External' },
+    { id: 'advisory',       label: 'Advisory Board / Group',               section: 'External' },
+    { id: 'directadvice',   label: 'Direct Advice',                        section: 'External' },
+    { id: 'internship',     label: 'Academic Internship',                  section: 'External' },
+    { id: 'studentproj',    label: 'Student Project',                      section: 'External' },
+    { id: 'seminar',        label: 'Seminar',                              section: 'External' },
+    { id: 'roundtable',     label: 'Roundtable',                           section: 'External' },
+    { id: 'workshop',       label: 'Workshop',                             section: 'External' },
+    { id: 'fellowship',     label: 'Policy Fellowship',                    section: 'External' },
+  ];
+
+  function buildRAGTable() {
+    const tbody = document.getElementById('rag-override-body');
+    const saved = window.APE_CONFIG?.ragOverrides || {};
+    OPTIONS.forEach(opt => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>
+          <span class="section-tag">${opt.section}</span>
+          <div class="option-name">${opt.label}</div>
+        </td>
+        <td>
+          <select class="rag-select" id="rag_${opt.id}" onchange="updateSelectStyle(this)">
+            <option value="">Default (use scoring)</option>
+            <option value="green" ${saved[opt.id]==='green' ? 'selected':''}>🟢 Green — promote as good fit</option>
+            <option value="amber" ${saved[opt.id]==='amber' ? 'selected':''}>🟡 Amber — flag as OK fit</option>
+            <option value="red"   ${saved[opt.id]==='red'   ? 'selected':''}>🔴 Red — flag as poor fit</option>
+          </select>
+        </td>`;
+      tbody.appendChild(tr);
+      updateSelectStyle(tr.querySelector('select'));
+    });
+  }
+
+  function updateSelectStyle(sel) {
+    sel.className = 'rag-select';
+    if (sel.value) sel.classList.add(sel.value);
+  }
+
+  function getFormData() {
+    const g = id => document.getElementById(id)?.value?.trim() || '';
+    return {
+      org: { name: g('org_name'), abbreviation: g('org_abbr'), updated: new Date().toISOString().split('T')[0] },
+      contacts: {
+        csa_name: g('csa_name'), csa_email: g('csa_email'),
+        sac_name: g('sac_name'), sac_email: g('sac_email'),
+        director_analysis: g('director_analysis'), gsr_hop: g('gsr_hop'),
+        ari_lead: g('ari_lead'), college_contact: g('college_contact'),
+        alb_lead: g('alb_lead'), hr_secondments: g('hr_secondments')
+      },
+      links: {
+        csa_guidance: g('link_csa_guidance'), sac_guidance: g('link_sac_guidance'),
+        analyst_community: g('link_analyst_community'), albs_guidance: g('link_albs_guidance'),
+        ari_guidance: g('link_ari_guidance'), college_guidance: g('link_college_guidance'),
+        research_commissioning: g('link_research_commissioning'), secondments: g('link_secondments'),
+        advisory_groups: g('link_advisory_groups'), direct_advice: g('link_direct_advice'),
+        internships: g('link_internships'), student_projects: g('link_student_projects'),
+        policy_fellowships: g('link_policy_fellowships'), finding_academics: g('link_finding_academics')
+      },
+      ragOverrides: Object.fromEntries(OPTIONS.map(opt => [opt.id, document.getElementById(`rag_${opt.id}`)?.value || '']))
+    };
+  }
+
+  function generateConfigJs(data) {
+    return `// A-PE Navigator - Organisation Configuration
+// Generated by Admin panel on ${data.org.updated}
+// To update: go to Admin Settings, make changes, and download a new version
+
+window.APE_CONFIG = ${JSON.stringify(data, null, 2)};
+`;
+  }
+
+  function saveAndExport() {
+    const data = getFormData();
+    localStorage.setItem('ape_config', JSON.stringify(data));
+
+    const js = generateConfigJs(data);
+    document.getElementById('export-output').value = js;
+    document.getElementById('export-block').style.display = 'block';
+    document.getElementById('export-block').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    const status = document.getElementById('save-status');
+    status.className = 'save-status success';
+    status.textContent = '✓ Saved to browser. Download config.js below to publish.';
+    setTimeout(() => { status.className = 'save-status'; }, 5000);
+  }
+
+  function downloadConfig() {
+    const text = document.getElementById('export-output').value;
+    const blob = new Blob([text], { type: 'application/javascript' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'config.js';
+    a.click();
+  }
+
+  function copyConfig() {
+    const text = document.getElementById('export-output').value;
+    navigator.clipboard.writeText(text).then(() => {
+      const status = document.getElementById('save-status');
+      status.className = 'save-status info';
+      status.textContent = '📋 Copied to clipboard!';
+      setTimeout(() => { status.className = 'save-status'; }, 3000);
+    });
+  }
+
+  function loadFromStorage() {
+    const saved = localStorage.getItem('ape_config');
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    const s = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+    s('org_name', data.org?.name); s('org_abbr', data.org?.abbreviation);
+    Object.entries(data.contacts || {}).forEach(([k,v]) => s(k, v));
+    Object.entries(data.links || {}).forEach(([k,v]) => s('link_' + k, v));
+    OPTIONS.forEach(opt => {
+      const sel = document.getElementById(`rag_${opt.id}`);
+      if (sel) { sel.value = data.ragOverrides?.[opt.id] || ''; updateSelectStyle(sel); }
+    });
+  }
+
+  function loadFromConfig() {
+    const cfg = window.APE_CONFIG;
+    if (!cfg) return;
+    const s = (id, val) => { const el = document.getElementById(id); if (el && val && val !== 'Your Department / Organisation') el.value = val; };
+    s('org_name', cfg.org?.name); s('org_abbr', cfg.org?.abbreviation);
+    Object.entries(cfg.contacts || {}).forEach(([k,v]) => s(k, v));
+    Object.entries(cfg.links || {}).forEach(([k,v]) => s('link_' + k, v));
+    OPTIONS.forEach(opt => {
+      const sel = document.getElementById(`rag_${opt.id}`);
+      if (sel) { sel.value = cfg.ragOverrides?.[opt.id] || ''; updateSelectStyle(sel); }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    buildRAGTable();
+    // Load from localStorage first, fall back to config.js
+    const saved = localStorage.getItem('ape_config');
+    if (saved) loadFromStorage();
+    else loadFromConfig();
+  });
+</script>
+</body>
+</html>

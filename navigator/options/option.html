@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loading… — A-PE Navigator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --ink-soft: #4a4a6a;
+    --ink-faint: #8888aa;
+    --bg: #f8f7f4;
+    --bg-card: #ffffff;
+    --accent: #2d5be3;
+    --accent-light: #e8eeff;
+    --green: #1a8a5a;
+    --green-bg: #e8f7f0;
+    --green-border: #8fd4b5;
+    --amber: #c97000;
+    --amber-bg: #fff8e8;
+    --amber-border: #f5c96a;
+    --red: #c0392b;
+    --red-bg: #fdf0ee;
+    --red-border: #f0a899;
+    --border: #e2e0db;
+    --radius: 12px;
+    --shadow: 0 2px 12px rgba(26,26,46,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Sora', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; }
+
+  .site-header {
+    background: var(--ink); color: white; padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 56px; position: sticky; top: 0; z-index: 100;
+  }
+  .site-header .logo { font-size: 0.85rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: white; text-decoration: none; opacity: 0.9; }
+  .header-nav a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.8rem; margin-left: 1.5rem; }
+  .header-nav a:hover { color: white; }
+
+  .breadcrumb {
+    background: white; border-bottom: 1px solid var(--border);
+    padding: 0.75rem 2rem; font-size: 0.8rem; color: var(--ink-faint);
+  }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb span { margin: 0 0.4rem; }
+
+  .page-hero {
+    padding: 3rem 2rem 2.5rem;
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d3561 60%, #1a3a5c 100%);
+    color: white;
+  }
+  .page-hero-inner { max-width: 900px; margin: 0 auto; }
+  .section-pill {
+    display: inline-block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8);
+    padding: 0.25rem 0.75rem; border-radius: 20px; margin-bottom: 1rem;
+  }
+  .page-hero h1 {
+    font-family: 'Source Serif 4', serif; font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 300; line-height: 1.2; margin-bottom: 0.75rem;
+  }
+  .page-hero .subtitle { font-size: 1rem; opacity: 0.65; font-weight: 300; max-width: 600px; }
+
+  .rag-banner {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem 1.5rem; border-radius: var(--radius);
+    margin: 1.5rem 0 0; max-width: 500px;
+  }
+  .rag-banner.green { background: rgba(26,138,90,0.2); border: 1px solid rgba(26,138,90,0.4); }
+  .rag-banner.amber { background: rgba(201,112,0,0.2); border: 1px solid rgba(201,112,0,0.4); }
+  .rag-banner.red   { background: rgba(192,57,43,0.2);  border: 1px solid rgba(192,57,43,0.4); }
+  .rag-banner-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .rag-banner.green .rag-banner-dot { background: #4fc98a; }
+  .rag-banner.amber .rag-banner-dot { background: #f5c96a; }
+  .rag-banner.red   .rag-banner-dot { background: #f0a899; }
+  .rag-banner-text { font-size: 0.88rem; color: rgba(255,255,255,0.9); }
+  .rag-banner-text strong { font-weight: 600; }
+
+  .main-container { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+
+  .content-grid { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; }
+  @media (max-width: 720px) { .content-grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.75rem; box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+  }
+  .card h2 {
+    font-family: 'Source Serif 4', serif; font-size: 1.25rem; font-weight: 300;
+    margin-bottom: 1rem; color: var(--ink); padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .card p { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.75; }
+  .card ul { padding-left: 0; list-style: none; }
+  .card ul li {
+    font-size: 0.88rem; color: var(--ink-soft); line-height: 1.6;
+    padding: 0.5rem 0 0.5rem 1.5rem; position: relative;
+    border-bottom: 1px solid var(--bg);
+  }
+  .card ul li:last-child { border-bottom: none; }
+  .card ul li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-size: 0.8rem; top: 0.55rem; }
+  .card ul.limitations li::before { content: '–'; color: var(--red); }
+
+  .sidebar-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow);
+    margin-bottom: 1.25rem;
+  }
+  .sidebar-card h3 {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 1rem; padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .contact-row { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.75rem; }
+  .contact-label { font-size: 0.72rem; color: var(--ink-faint); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+  .contact-value { font-size: 0.88rem; color: var(--ink); font-weight: 500; }
+  .contact-value a { color: var(--accent); text-decoration: none; }
+  .no-data { font-size: 0.82rem; color: var(--ink-faint); font-style: italic; }
+
+  .resource-link {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.65rem 0; border-bottom: 1px solid var(--border); text-decoration: none;
+  }
+  .resource-link:last-child { border-bottom: none; }
+  .resource-link-icon { color: var(--accent); font-size: 0.9rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .resource-link-body { flex: 1; }
+  .resource-link-label { font-size: 0.85rem; color: var(--accent); font-weight: 500; line-height: 1.3; }
+  .resource-link-desc { font-size: 0.75rem; color: var(--ink-faint); margin-top: 0.15rem; }
+  .resource-link:hover .resource-link-label { text-decoration: underline; }
+
+  .back-link {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    color: var(--accent); text-decoration: none; font-size: 0.88rem; font-weight: 600;
+    margin-bottom: 2rem;
+  }
+  .back-link:hover { text-decoration: underline; }
+
+  .scoring-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem; }
+  .scoring-item {
+    padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.78rem;
+  }
+  .scoring-item.match { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+  .scoring-item.no-match { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+  .scoring-item-label { font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.2rem; }
+
+  .site-footer {
+    background: var(--ink); color: rgba(255,255,255,0.4); text-align: center;
+    padding: 2rem; font-size: 0.78rem; margin-top: 4rem; line-height: 1.8;
+  }
+  .site-footer a { color: rgba(255,255,255,0.55); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="../index.html" class="logo">A-PE Navigator</a>
+  <nav class="header-nav">
+    <a href="../finding-academics.html">Finding Academics</a>
+    <a href="../admin/index.html">Admin</a>
+  </nav>
+</header>
+
+<div class="breadcrumb">
+  <a href="../index.html">Navigator</a><span>›</span>
+  <span id="breadcrumb-title">Loading…</span>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="section-pill" id="hero-section">—</div>
+    <h1 id="hero-title">Loading…</h1>
+    <p class="subtitle" id="hero-subtitle"></p>
+    <div class="rag-banner" id="rag-banner" style="display:none">
+      <div class="rag-banner-dot"></div>
+      <div class="rag-banner-text" id="rag-banner-text"></div>
+    </div>
+  </div>
+</div>
+
+<main class="main-container">
+  <a href="../index.html" class="back-link">← Back to Navigator</a>
+
+  <div class="content-grid">
+    <div class="main-col">
+      <div class="card">
+        <h2>About this option</h2>
+        <p id="description"></p>
+      </div>
+
+      <div class="card">
+        <h2>Benefits</h2>
+        <ul id="benefits-list"></ul>
+      </div>
+
+      <div class="card">
+        <h2>Limitations</h2>
+        <ul class="limitations" id="limitations-list"></ul>
+      </div>
+
+      <div class="card">
+        <h2>Best for</h2>
+        <p id="best-for"></p>
+      </div>
+    </div>
+
+    <div class="sidebar-col">
+      <div class="sidebar-card" id="local-card">
+        <h3 id="org-label">Local to your organisation</h3>
+        <div id="local-contacts"></div>
+        <div id="local-link-container"></div>
+      </div>
+
+      <div class="sidebar-card" id="resources-card">
+        <h3>Cross-government resources</h3>
+        <div id="xgov-resources"></div>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>Finding Academics</h3>
+        <p style="font-size:0.83rem;color:var(--ink-soft);line-height:1.6;margin-bottom:0.75rem;">
+          Once you've chosen your engagement approach, use the Finding Academics guide to identify the right experts.
+        </p>
+        <a href="../finding-academics.html" style="display:inline-flex;align-items:center;gap:0.3rem;color:var(--accent);font-weight:600;font-size:0.85rem;text-decoration:none;">
+          Go to guide →
+        </a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  A-PE Navigator v2.0 · Developed by GO-Science · <a href="../index.html">Back to Navigator</a>
+</footer>
+
+<script src="../assets/data.js"></script>
+<script src="../assets/config.js"></script>
+<script src="../assets/options-content.js"></script>
+<script>
+  // Determine which option to render from URL query param or filename
+  function getOptionId() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('id')) return params.get('id');
+    // Try from filename: e.g. csa.html -> csa
+    const file = window.location.pathname.split('/').pop().replace('.html','');
+    return file;
+  }
+
+  function getRAGFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('rag') || null;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const id = getOptionId();
+    const content = window.APE_OPTIONS_CONTENT[id];
+    const cfg = window.APE_CONFIG;
+    const rag = getRAGFromUrl();
+
+    if (!content) {
+      document.getElementById('hero-title').textContent = 'Option not found';
+      return;
+    }
+
+    document.title = `${content.title} — A-PE Navigator`;
+    document.getElementById('breadcrumb-title').textContent = content.title;
+    document.getElementById('hero-section').textContent = content.section;
+    document.getElementById('hero-title').textContent = content.title;
+    document.getElementById('hero-subtitle').textContent = content.subtitle;
+    document.getElementById('description').textContent = content.description;
+    document.getElementById('best-for').textContent = content.bestFor;
+
+    // Benefits
+    const bl = document.getElementById('benefits-list');
+    (content.benefits || []).forEach(b => {
+      const li = document.createElement('li');
+      li.textContent = b;
+      bl.appendChild(li);
+    });
+
+    // Limitations
+    const ll = document.getElementById('limitations-list');
+    (content.limitations || []).forEach(l => {
+      const li = document.createElement('li');
+      li.textContent = l;
+      ll.appendChild(li);
+    });
+
+    // RAG banner (if coming from results)
+    if (rag) {
+      const banner = document.getElementById('rag-banner');
+      const labels = { green: 'Good fit for your situation', amber: 'Potentially OK for your situation', red: 'Poor fit — proceed with caution' };
+      banner.className = `rag-banner ${rag}`;
+      document.getElementById('rag-banner-text').innerHTML = `<strong>${labels[rag]}</strong> — based on your Navigator selections`;
+      banner.style.display = 'flex';
+    }
+
+    // Local contacts
+    const orgName = cfg?.org?.name || 'Your organisation';
+    document.getElementById('org-label').textContent = `Local to ${orgName}`;
+
+    const contacts = document.getElementById('local-contacts');
+    const addContact = (label, key) => {
+      const val = cfg?.contacts?.[key];
+      const row = document.createElement('div');
+      row.className = 'contact-row';
+      row.innerHTML = `<span class="contact-label">${label}</span><span class="contact-value">${val || '<span class="no-data">Not yet configured</span>'}</span>`;
+      contacts.appendChild(row);
+    };
+
+    if (content.contactKey) {
+      addContact('Key contact', content.contactKey);
+    }
+    if (content.contactEmailKey) {
+      addContact('Email', content.contactEmailKey);
+    }
+
+    // Local link
+    const llc = document.getElementById('local-link-container');
+    if (content.localLinkKey && content.localLinkLabel) {
+      const url = cfg?.links?.[content.localLinkKey];
+      const div = document.createElement('div');
+      div.style.marginTop = '0.75rem';
+      if (url) {
+        div.innerHTML = `<a href="${url}" target="_blank" class="resource-link"><span class="resource-link-icon">🔗</span><span class="resource-link-body"><span class="resource-link-label">${content.localLinkLabel}</span></span></a>`;
+      } else {
+        div.innerHTML = `<div class="contact-row"><span class="contact-label">${content.localLinkLabel}</span><span class="no-data">Link not yet configured — add via Admin</span></div>`;
+      }
+      llc.appendChild(div);
+    }
+
+    // X-govt resources
+    const xgov = document.getElementById('xgov-resources');
+    if (content.xgovtResources && content.xgovtResources.length > 0) {
+      content.xgovtResources.forEach(r => {
+        const a = document.createElement('a');
+        a.className = 'resource-link';
+        a.href = r.url || '#';
+        if (r.url) a.target = '_blank';
+        a.innerHTML = `<span class="resource-link-icon">🔗</span><div class="resource-link-body"><div class="resource-link-label">${r.label}</div>${r.description ? `<div class="resource-link-desc">${r.description}</div>` : ''}</div>`;
+        xgov.appendChild(a);
+      });
+    } else {
+      xgov.innerHTML = '<p class="no-data">No cross-government resources listed yet.</p>';
+    }
+  });
+</script>
+</body>
+</html>

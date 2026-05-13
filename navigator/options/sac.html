@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="refresh" content="0; url=option.html?id=sac">
+<script>
+  // Preserve any rag param when redirecting
+  const p = new URLSearchParams(window.location.search);
+  const rag = p.get('rag');
+  window.location.replace('option.html?id=sac' + (rag ? '&rag=' + rag : ''));
+</script>
+</head>
+<body></body>
+</html>
