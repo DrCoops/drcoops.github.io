@@ -202,6 +202,11 @@
         <ul class="limitations" id="limitations-list"></ul>
       </div>
 
+      <div class="card" id="practical-steps-card" style="display:none">
+        <h2>Practical steps</h2>
+        <ul id="practical-steps-list"></ul>
+      </div>
+
       <div class="card">
         <h2>Best for</h2>
         <p id="best-for"></p>
@@ -272,6 +277,18 @@
     document.getElementById('hero-title').textContent = content.title;
     document.getElementById('hero-subtitle').textContent = content.subtitle;
     document.getElementById('description').textContent = content.description;
+    // Practical steps (where they exist)
+    if (content.practicalSteps && content.practicalSteps.length > 0) {
+      const card = document.getElementById('practical-steps-card');
+      card.style.display = 'block';
+      const pl = document.getElementById('practical-steps-list');
+      content.practicalSteps.forEach((s, i) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${i + 1}.</strong> ${s}`;
+        pl.appendChild(li);
+      });
+    }
+
     document.getElementById('best-for').textContent = content.bestFor;
 
     // Benefits
